@@ -1,0 +1,27 @@
+{
+ "name": "muhammad",
+ "size": 5,
+ "text": "hi there",
+ "children": [
+  {
+   "name": "kareem",
+   "size": 4,
+   "text":"hehe",
+   "children": [
+    {
+     "name": "muhammad",
+     "size": 2,
+     "text":"bardo",
+     "children": [
+      {"name": "kareem", "size": 1, "text": "tab3an"}
+     ]
+    },
+    {
+     "name": "hassan",
+     "size":1,
+     "text":"7elwa"
+    }
+   ]
+  }
+ ]
+}
