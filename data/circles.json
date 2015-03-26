@@ -1,27 +1,36 @@
 {
  "name": "muhammad",
- "size": 5,
+ "size": 10,
  "text": "hi there",
+ "pic" : "data/images/muhammad.jpg",
  "children": [
   {
-   "name": "kareem",
-   "size": 4,
+   "name": "Kareem",
+   "size": 5,
    "text":"hehe",
+   "pic" : "data/images/kareem.jpg",
    "children": [
     {
      "name": "muhammad",
      "size": 2,
      "text":"bardo",
+     "pic" : "data/images/muhammad.jpg",
      "children": [
-      {"name": "kareem", "size": 1, "text": "tab3an"}
+      {
+        "name": "Kareem",
+        "size": 1,
+        "text": "tab3an",
+        "pic" : "data/images/kareem.jpg"
+      }
      ]
-    },
-    {
-     "name": "hassan",
-     "size":1,
-     "text":"7elwa"
     }
    ]
-  }
+  },
+    {
+     "name": "Dina",
+     "size":1,
+     "text":"Hiii",
+     "pic" : "data/images/dina.jpg"
+    }
  ]
 }
