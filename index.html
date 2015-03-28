@@ -16,7 +16,7 @@
         <script type="text/javascript">
             var width = window.screen.availWidth,
             height = window.screen.availHeight,
-            root;
+            nodes, links, root;
 
 var force = d3.layout.force()
     .size([width, height])
@@ -34,14 +34,25 @@ var link = svg.selectAll(".link"),
 
 d3.json("data/circles.json", function(json) {
   root = json;
+
+  nodes = flatten(root),
+  links = d3.layout.tree().links(nodes);
+
+  nodes.forEach(function (d) {
+      d._children = d.children;
+      d.children = null;
+  });
+
   update();
 });
 
-function update() {
-  var nodes = flatten(root),
-      links = d3.layout.tree().links(nodes);
 
+function update() {
       
+
+  nodes = flatten(root),
+  links = d3.layout.tree().links(nodes);
+    
   // Restart the force layout.
   force
       .nodes(nodes)
@@ -51,26 +62,18 @@ function update() {
   // Update the links…
   link = link.data(links, function(d) { return d.target.id; });
 
+  // Enter any new links.
+  link.enter().insert("line", ".node").attr("class", "link");
+      
+
   // Exit any old links.
   link.exit().remove();
-
-  // Enter any new links.
-  link.enter().insert("line")
-      .attr("class", "link")
-      .attr("x1", function(d) { return d.source.x + 10; })
-      .attr("y1", function(d) { return d.source.y + 10; })
-      .attr("x2", function(d) { return d.target.x - 10; })
-      .attr("y2", function(d) { return d.target.y - 10; })
-      .style("stroke-width", function(d) { return Math.sqrt(d.target.size); });
 
   // Update the nodes…
   node = node.data(nodes, function(d) { return d.id; }).style("fill", color);
 
-  // Exit any old nodes.
-  node.exit().remove();
-
   // Enter any new nodes.
-  node.enter().append("image")
+  node.enter().insert("image")
       .attr("class", "node")
       .style("fill", color)
       .attr("xlink:href",  function(d) { return d.pic;})
@@ -82,6 +85,10 @@ function update() {
       .on("mouseover", showTooltip)
       .on("mouseout", hideTooltip)
       .call(force.drag)
+
+   // Exit any old nodes.
+  node.exit().remove();
+    
       
 }
 
@@ -155,7 +162,9 @@ function flatten(root) {
   var nodes = [], i = 0;
 
   function recurse(node) {
-    if (node.children) node.children.forEach(recurse);
+    if (node.children) {
+      node.children.forEach(recurse);
+    }
     if (!node.id) node.id = ++i;
     nodes.push(node);
   }

@@ -2,25 +2,25 @@
  "name": "muhammad",
  "size": 10,
  "text": "hi there",
- "pic" : "data/images/muhammad.jpg",
+ "pic" : "data/images/muhammad.png",
  "children": [
   {
    "name": "Kareem",
    "size": 5,
    "text":"hehe",
-   "pic" : "data/images/kareem.jpg",
+   "pic" : "data/images/kareem.png",
    "children": [
     {
      "name": "muhammad",
      "size": 2,
      "text":"bardo",
-     "pic" : "data/images/muhammad.jpg",
+     "pic" : "data/images/muhammad.png",
      "children": [
       {
         "name": "Kareem",
         "size": 1,
         "text": "tab3an",
-        "pic" : "data/images/kareem.jpg"
+        "pic" : "data/images/kareem.png"
       }
      ]
     }
@@ -30,7 +30,7 @@
      "name": "Dina",
      "size":1,
      "text":"Hiii",
-     "pic" : "data/images/dina.jpg"
+     "pic" : "data/images/dina.png"
     }
  ]
 }
