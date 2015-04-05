@@ -1,4 +1,10 @@
 {
+ "name": "Test",
+ "size": 15,
+ "text": "hi there",
+ "pic" : "data/images/muhammad.png",
+ "children": [
+{
  "name": "muhammad",
  "size": 10,
  "text": "hi there",
@@ -12,13 +18,13 @@
    "children": [
     {
      "name": "muhammad",
-     "size": 2,
+     "size": 4,
      "text":"bardo",
      "pic" : "data/images/muhammad.png",
      "children": [
       {
         "name": "Kareem",
-        "size": 1,
+        "size": 3,
         "text": "tab3an",
         "pic" : "data/images/kareem.png"
       }
@@ -28,9 +34,151 @@
   },
     {
      "name": "Dina",
-     "size":1,
+     "size":3,
      "text":"Hiii",
      "pic" : "data/images/dina.png"
     }
  ]
+},{
+ "name": "muhammad",
+ "size": 10,
+ "text": "hi there",
+ "pic" : "data/images/muhammad.png",
+ "children": [
+  {
+   "name": "Kareem",
+   "size": 5,
+   "text":"hehe",
+   "pic" : "data/images/kareem.png",
+   "children": [
+    {
+     "name": "muhammad",
+     "size": 4,
+     "text":"bardo",
+     "pic" : "data/images/muhammad.png",
+     "children": [
+      {
+        "name": "Kareem",
+        "size": 3,
+        "text": "tab3an",
+        "pic" : "data/images/kareem.png"
+      }
+     ]
+    }
+   ]
+  },
+    {
+     "name": "Dina",
+     "size":3,
+     "text":"Hiii",
+     "pic" : "data/images/dina.png"
+    }
+ ]
+},{
+ "name": "muhammad",
+ "size": 10,
+ "text": "hi there",
+ "pic" : "data/images/muhammad.png",
+ "children": [
+  {
+   "name": "Kareem",
+   "size": 5,
+   "text":"hehe",
+   "pic" : "data/images/kareem.png",
+   "children": [
+    {
+     "name": "muhammad",
+     "size": 4,
+     "text":"bardo",
+     "pic" : "data/images/muhammad.png",
+     "children": [
+      {
+        "name": "Kareem",
+        "size": 3,
+        "text": "tab3an",
+        "pic" : "data/images/kareem.png"
+      }
+     ]
+    }
+   ]
+  },
+    {
+     "name": "Dina",
+     "size":3,
+     "text":"Hiii",
+     "pic" : "data/images/dina.png"
+    }
+ ]
+},{
+ "name": "muhammad",
+ "size": 10,
+ "text": "hi there",
+ "pic" : "data/images/muhammad.png",
+ "children": [
+  {
+   "name": "Kareem",
+   "size": 5,
+   "text":"hehe",
+   "pic" : "data/images/kareem.png",
+   "children": [
+    {
+     "name": "muhammad",
+     "size": 4,
+     "text":"bardo",
+     "pic" : "data/images/muhammad.png",
+     "children": [
+      {
+        "name": "Kareem",
+        "size": 3,
+        "text": "tab3an",
+        "pic" : "data/images/kareem.png"
+      }
+     ]
+    }
+   ]
+  },
+    {
+     "name": "Dina",
+     "size":3,
+     "text":"Hiii",
+     "pic" : "data/images/dina.png"
+    }
+ ]
+},{
+ "name": "muhammad",
+ "size": 10,
+ "text": "hi there",
+ "pic" : "data/images/muhammad.png",
+ "children": [
+  {
+   "name": "Kareem",
+   "size": 5,
+   "text":"hehe",
+   "pic" : "data/images/kareem.png",
+   "children": [
+    {
+     "name": "muhammad",
+     "size": 4,
+     "text":"bardo",
+     "pic" : "data/images/muhammad.png",
+     "children": [
+      {
+        "name": "Kareem",
+        "size": 3,
+        "text": "tab3an",
+        "pic" : "data/images/kareem.png"
+      }
+     ]
+    }
+   ]
+  },
+    {
+     "name": "Dina",
+     "size":3,
+     "text":"Hiii",
+     "pic" : "data/images/dina.png"
+    }
+ ]
+}
+]
 }

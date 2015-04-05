@@ -16,18 +16,49 @@
         <script type="text/javascript">
             var width = window.screen.availWidth,
             height = window.screen.availHeight,
+            
+            padding = 10, // separation between circles
             nodes, links, root;
+
+            //zoom
+            var scaleFactor = 1;
+            var translation = [0,0];
+            var zoomer = d3.behavior.zoom()
+                .scaleExtent([0.6,8])
+                .on("zoom", zoom);
+              //allow 10 times zoom in or out
+              //define the event handler function
+
 
 var force = d3.layout.force()
     .size([width, height])
-    .charge(-100)
-    .gravity(.05)
-    .linkDistance(300)
+    .gravity(0.5)
+    .friction(0.05)
+    .linkStrength(0.9)
+    .charge( function(d){
+      return d._children ? -d.size / 100 : -50;
+    })
+    .linkDistance(function(d) { 
+        return d.target._children ? 80 : 30;
+    })
     .on("tick", tick);
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height)
+  .append("g")
+    .call(zoomer);
+
+var rect = svg.append("rect")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("fill", "none")
+    .style("pointer-events", "all");  
+
+var vis = svg.append("svg:g")
+            .attr("class", "plotting-area");
+
+var defs = svg.append("defs");    
 
 var link = svg.selectAll(".link"),
     node = svg.selectAll(".node");
@@ -35,9 +66,16 @@ var link = svg.selectAll(".link"),
 d3.json("data/circles.json", function(json) {
   root = json;
 
+  root.fixed = true;
+  root.x = width / 2;
+  root.y = height / 2 - 80;
+
   nodes = flatten(root),
   links = d3.layout.tree().links(nodes);
 
+  
+
+  //collapse all nodes by default
   nodes.forEach(function (d) {
       d._children = d.children;
       d.children = null;
@@ -52,7 +90,7 @@ function update() {
 
   nodes = flatten(root),
   links = d3.layout.tree().links(nodes);
-    
+
   // Restart the force layout.
   force
       .nodes(nodes)
@@ -69,39 +107,46 @@ function update() {
   // Exit any old links.
   link.exit().remove();
 
+  link.each(function(d){applyGradient(this, d)});
+
   // Update the nodes…
-  node = node.data(nodes, function(d) { return d.id; }).style("fill", color);
+  node = node.data(nodes, function(d) { return d.id; });
 
   // Enter any new nodes.
   node.enter().insert("image")
       .attr("class", "node")
-      .style("fill", color)
       .attr("xlink:href",  function(d) { return d.pic;})
-      .attr("x", function(d) { return d.x - 50; })
-      .attr("y", function(d) { return d.y - 50; })
-      .attr("height", 100)
-      .attr("width", 100)
+      .attr("x", function(d) { return d.x - (d.size*10/2); })
+      .attr("y", function(d) { return d.y - (d.size*10/2); })
+      .attr("height", function(d){ return d.size*10; })
+      .attr("width", function(d){ return d.size*10; })
       .on("click", click)
+      //.on('dblclick', connectedNodes)
       .on("mouseover", showTooltip)
       .on("mouseout", hideTooltip)
       .call(force.drag)
 
+
    // Exit any old nodes.
   node.exit().remove();
-    
-      
+       
 }
 
 function tick() {
   link
-      .attr("x1", function(d) { return d.source.x + 10; })
-      .attr("y1", function(d) { return d.source.y + 10; })
-      .attr("x2", function(d) { return d.target.x - 10; })
-      .attr("y2", function(d) { return d.target.y - 10; })
-      .style("marker-end",  "url(#suit)");
+      .attr("x1", function(d) { return translation[0] + scaleFactor*d.source.x ; })
+      .attr("y1", function(d) { return translation[1] + scaleFactor*d.source.y ; })
+      .attr("x2", function(d) { return translation[0] + scaleFactor*d.target.x ; })
+      .attr("y2", function(d) { return translation[1] + scaleFactor*d.target.y ; });
 
-  node.attr("x", function(d) { return d.x - 50; })
-      .attr("y", function(d) { return d.y - 50; });
+  node.attr("x", function(d) { return translation[0] + scaleFactor*(d.x) - (d.size*10/2); })
+      .attr("y", function(d) { return translation[1] + scaleFactor*(d.y) - (d.size*10/2); })
+      .attr("height", function(d){ return d.size*10; })
+      .attr("width", function(d){ return d.size*10; });
+
+  link.each(function(d){applyGradient(this, d)});
+  node.each(collide(0.5));
+    
 }
 
 // Color leaf nodes orange, and packages white or blue.
@@ -115,18 +160,20 @@ function click(d) {
     if (d.children) {
       d._children = d.children;
       d.children = null;
+
     } else {
       d.children = d._children;
       d._children = null;
     }
+    tick();
     update();
   }
 }
 
 function showTooltip(d){
   console.log(d.text);
-    var xPosition = parseFloat(d3.select(this).attr("x")) + 100;
-    var yPosition = parseFloat(d3.select(this).attr("y")) + 100;
+    var xPosition = parseFloat(d3.select(this).attr("x")) + (d.size*10);
+    var yPosition = parseFloat(d3.select(this).attr("y")) + (d.size*10);
 
     //Update the tooltip position and value
     d3.select("#tooltip")
@@ -192,21 +239,88 @@ d3.select("#tooltip")
     .style("pointer-events","none");
   })
 
-//arrows
-svg.append("defs").selectAll("marker")
-  .data(["suit", "licensing", "resolved"])
-  .enter().append("marker")
-  .attr("id", function(d) { return d; })
-  .attr("viewBox", "0 -5 10 10")
-  .attr("refX", 25)
-  .attr("refY", 0)
-  .attr("markerWidth", 6)
-  .attr("markerHeight", 6)
-  .attr("orient", "auto")
-  .append("path")
-  .attr("d", "M0,-5L10,0L0,5 L10,0 L0, -5")
-  .style("stroke", "#4679BD")
-  .style("opacity", "0.6");
+// Gradient
+function getRandomInt() {
+  return Math.floor(Math.random() * (100000 - 0));
+}
+
+function applyGradient(line, d){
+  var self = d3.select(line); //select the current link
+
+  // store the currently used gradient to delete it later.
+  var current_gradient = self.style("stroke")
+  current_gradient = current_gradient.substring(4, current_gradient.length-1);
+
+  // Generate a random id for the gradient calculated for this link
+  var new_gradient_id = "line-gradient" + getRandomInt();
+
+
+  // Add the gradient to the svg:defs
+  defs.append("linearGradient")                
+      .attr("id", new_gradient_id)
+      .attr("gradientUnits", "userSpaceOnUse")
+      .attr("x1", d.source.px)
+      .attr("y1", d.source.py)
+      .attr("x2", d.target.px)
+      .attr("y2", d.target.py)    
+  .selectAll("stop")                      
+      .data([                             
+          {offset: "0%", color: "darkBlue"},       
+          {offset: "25%", color: "darkBlue"},         
+          {offset: "50%", color: "powderblue"},         
+          {offset: "100%", color: "powderblue"}
+      ])                  
+  .enter().append("stop")         
+      .attr("offset", function(d) { return d.offset; })   
+      .attr("stop-color", function(d) { return d.color; });   
+
+  //apply the gradient
+  self.style("stroke", "url(#" + new_gradient_id + ")")
+
+  //Remove the old gradient from defs.
+  defs.select(current_gradient).remove();
+}
+
+//colission
+function collide(alpha) {
+  console.log(alpha);
+  var quadtree = d3.geom.quadtree(nodes);
+  return function(d) {
+    var rb = 10*d.size + padding,
+        nx1 = d.x - rb,
+        nx2 = d.x + rb,
+        ny1 = d.y - rb,
+        ny2 = d.y + rb;
+    quadtree.visit(function(quad, x1, y1, x2, y2) {
+      if (quad.point && (quad.point !== d)) {
+        var x = d.x - quad.point.x,
+            y = d.y - quad.point.y,
+            l = Math.sqrt(x * x + y * y);
+          if (l < rb) {
+          l = (l - rb) / l * alpha;
+          d.x -= x *= l;
+          d.y -= y *= l;
+          quad.point.x += x;
+          quad.point.y += y;
+        }
+      }
+      return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+    });
+  };
+}
+
+
+  /*** Configure zoom behaviour ***/
+
+
+function zoom() {
+    console.log("zoom", d3.event.translate, d3.event.scale);
+    scaleFactor = d3.event.scale;
+    translation = d3.event.translate;
+    tick(); //update positions
+}
+
+
 
         </script>
     </body>
